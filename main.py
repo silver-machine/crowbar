@@ -78,33 +78,28 @@ def add(src, name):
         print(f"Folder '{src}' not found!")
         return
 
-    # Ensure lib directory exists
     os.makedirs("lib", exist_ok=True)
 
-    # Copy folder or file
     if os.path.isdir(src):
         shutil.copytree(src, library_directory, dirs_exist_ok=True)
     else:
         os.makedirs(library_directory, exist_ok=True)
         shutil.copy2(src, os.path.join(library_directory, "main.cb"))
 
-    # Ensure env file exists
     if not os.path.exists("env"):
         open("env", "w").close()
 
-    # Read current env entries
     with open("env", "r") as env_entries:
         lines = [line.strip() for line in env_entries]
 
     entry = f"{name} -- ~/crowbar/lib/{name}/main.cb"
 
-    # Add env entry if missing
     if entry not in lines:
         with open("env", "a") as f:
             f.write(entry + "\n")
-        print(f"Library '{name}' added and registered")
+        print(f"{name} added and registered")
     else:
-       print(f"Library '{name}' already exists!")
+       print(f"{name} already exists!")
 
 
 def new(name):
