@@ -28,3 +28,4 @@ Compile using `pyinstaller --onefile main.py`, then find the executable and rena
 - Write `cheatsheet.cb`
 - Improve examples
 - Finish `help` library
+- Add transpiler
