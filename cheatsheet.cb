@@ -1,0 +1,22 @@
+;; Single line comment
+
+:: Multi line
+comment ::
+
+;; Constants, variables, and functions
+
+365 const DAYS_IN_YEAR           ;; Caps aren't needed, just tradition
+
+0 const DAYS_IN_YEAR             ;; Throws error,  constants cannot be overwritten
+
+release DAYS_IN_YEAR
+365 const DAYS_IN_YEAR           ;; Does not throw error, as DAYS_IN_YEAR has been released
+
+1 store using_crowbar            ;; Store defines variable
+"Yes" store using_crowbar        ;; Crowbar is dynamically typed
+
+release using_crowbar            ;; Release works for all identifiers
+
+fn test_func
+    "Works!" .
+end

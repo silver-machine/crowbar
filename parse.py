@@ -140,10 +140,14 @@ def parse(tokens):
                 
                 if name_type != "ID":
                     error("Type Error", "Variable name must be identifier")
-                
-                val = stack.pop()
-                variables[name_val] = val
-                i += 1
+                elif name_val in constants:
+                    error("Definition Error", f"'{name_val}' already defined (as constant)")
+                elif name_val in functions:
+                    error("Definition Error", f"'{name_val}' already defined (as function)")
+                else:              
+                    val = stack.pop()
+                    variables[name_val] = val
+                    i += 1
 
             elif value == "const":
                 # x const y / stores data x to const y if not previously defined
@@ -157,7 +161,9 @@ def parse(tokens):
 
                 val = stack.pop()
                 if name_val in constants:
-                    error("Definition Error", f"Constant '{name_val}' already defined")            
+                    error("Definition Error", f"Constant '{name_val}' already defined")
+                elif name_val in variables:
+                    error("Definition Error", f"'{name_val}' already defined (as variable)")        
                 else:
                     constants[name_val] = val
                 i += 1

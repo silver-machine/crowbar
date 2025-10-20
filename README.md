@@ -11,13 +11,13 @@ Crowbar is a stack-based interpreted language. Originally, it was meant for asci
 "How many times? " ask toint store x
 
 x for i
-  i tostr ": Hello, World" && . ;; Indentation doesn't matter
+  i tostr ": Hello, World" && .
 end
 ```
 
 ## Learning Crowbar
 
-`examples/` has a few simple examples that show how to use it. The [cheatsheet](cheatsheet.cb) is useful for quick references. The `help` library is simple but works too.
+`examples/` has a few simple examples that show how to use Crowbar. The [cheatsheet](cheatsheet.cb) is useful for quick references. The `help` library is simple but works too.
 
 ## Installing
 
@@ -29,3 +29,4 @@ Compile using `pyinstaller --onefile main.py`, then find the executable and rena
 - Improve examples
 - Finish `help` library
 - Add transpiler
+- Syntax highlighter
