@@ -1,0 +1,64 @@
+;; I/O
+
+fn std_fset
+    ;; takes in [x y z ...]
+    if defined STDFORMAT do
+        release STDFORMAT
+        const STDFORMAT
+    else
+        const STDFORMAT
+    end
+end
+
+fn std_fprintln
+    ;; takes in "text"
+    if defined STDFORMAT not do
+        ["NO FORMAT DEFINED. "] const STDFORMAT
+    end
+    store STDTEXT
+    "" store STDFS
+    STDFORMAT len for i
+        STDFS
+        STDFORMAT i get
+        && store STDFS
+    end
+    STDFS STDTEXT RESET && && .
+    release STDFS
+    release STDTEXT
+end
+
+fn std_fprint
+    ;; takes in "text"
+    if defined STDFORMAT not do
+        ["NO FORMAT DEFINED! "] const STDFORMAT const STDFORMAT
+    end
+    store STDTEXT
+    "" store STDFS
+    STDFORMAT len for i
+        STDFS
+        STDFORMAT i get
+        && store STDFS
+    end
+    STDFS STDTEXT RESET && && ,
+    release STDFS
+    release STDTEXT
+end
+
+fn std_fask
+    ;; takes in "prompt"
+    if defined STDFORMAT not do
+        ["NO FORMAT DEFINED! "] const STDFORMAT
+    end
+    store STDTEXT
+    "" store STDFS
+    STDFORMAT len for i
+        STDFS STDFORMAT i get &&
+    end
+    STDFS STDTEXT RESET && && ask
+    release STDFS
+    release STDTEXT
+end
+
+fn std_clearquit
+    clearscr quit
+end

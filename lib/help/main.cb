@@ -1,0 +1,37 @@
+use std
+
+"Welcome to the Crowbar help module\n'keyword' help for help on keyword" .
+
+if defined VERSION not do "v0" const VERSION end
+
+fn help
+    std_match
+    {"<data> store <name> | stores <data> to variable <name>" .} "store" std_case
+    {"<data> const <name> | stores <data> to constant <name>" .} "const" std_case
+    {"<prompt> ask | asks for input with <prompt>" .} "ask" std_case
+    {"<str1> <str2> && | concatenates <str1> and <str2>" .} "&&" std_case
+    {"<num1> <num2> + | adds <num1> to <num2>" .} "+" std_case
+    {"<num1> <num2> - | subtrats <num1> from <num2>" .} "-" std_case
+    {"<num1> <num2> * | multiplies <num1> by <num2>" .} "*" std_case
+    {"<num1> <num2> / | divides <num1> by <num2>" .} "/" std_case
+    {"<x> <y> = | checks if <x> is equal to <y>" .} "=" std_case
+    {"<x> <y> < | checks if <x> is less than <y>" .} "<" std_case
+    {"<x> <y> > | checks if <x> is greater than <y>" .} ">" std_case
+    {"<x> <y> != | checks if <x> is not equal to <y>" .} "<=" std_case
+    {"<x> <y> <= | checks if <x> is less than or equal to <y>" .} "<=" std_case
+    {"<x> <y> >= | checks if <x> is greater than or equal to <y>" .} ">=" std_case
+    {"<x> <y> in | checks if <x> is in <y> (array/string)" .} "in" std_case
+    {"<x> . | prints <x> to terminal with newline" .} "." std_case
+    {"<x> , | prints <x> to terminal without newline" .} "," std_case
+    {"<int> emit | prints ascii char <int> to terminal" .} "emit" std_case
+    {"<char> ascii | pushes ascii value of <char> to stack" .} "ascii" std_case
+    {"quit | quits program" .} "quit" std_case
+    {"<x> dup | duplicates <x> on stack" .} "dup" std_case
+    {"<x> drop | pops x from stack" .} "drop" std_case
+    {"<x> <y> swap | swaps order of <x> and <y> on stack" .} "swap" std_case
+    {"<x> <y> over | pushes <y> <x> <y> to stack" .} "swap" std_case
+    {"clearscr | clears terminal screen" .} "clearscr" std_case
+    {"use <library/file> | imports <library/file>" .} "use" std_case
+    {"create 'name' | creates file with name 'name'" .} "create" std_case
+    {"<x> write 'name' | writes <x> to file with name 'name'" .} "writes" std_case
+end

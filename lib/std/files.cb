@@ -1,0 +1,47 @@
+;; FILE I/O
+
+fn std_openf
+    ;; takes in "name"
+    if defined STDFILE do
+        release STDFILE
+        const STDFILE
+    else
+        const STDFILE
+    end
+end
+
+fn std_newf
+    ;; takes in "name"
+    const n
+    create n
+    n std_openf
+    release n
+end
+
+fn std_writef
+    ;; takes in data
+    const d
+    data write STDFILE
+    release d
+end
+
+fn std_appendf
+    ;; takes in data
+    const d
+    data append STDFILE
+    release d
+end
+
+fn std_getlinef
+    getline STDFILE
+end
+
+fn std_getlinesf
+    getlines STDFILE
+end
+
+fn std_closef
+    if define STDFILE do
+        release STDFILE
+    end
+end

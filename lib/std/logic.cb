@@ -1,0 +1,46 @@
+;; LOGIC
+
+fn and
+    ;; takes in code code
+    if depth 2 >= do
+        store STDA
+        store STDB
+        STDA STDB =
+        release STDA
+        release STDB
+    else
+        "Stack Error" "Stack Underflow" error
+    end
+end
+
+fn not
+    ;; takes in code
+    if depth 1 >= do
+        store STDA
+        STDA 1 !=
+        release STDA
+    else
+        "Stack Error" "Stack Underflow" error
+    end
+end
+
+fn or
+    ;; takes in code code
+    if depth 2 >= do
+        store STDA
+        store STDB
+        if STDA do
+            1
+        end
+        if STDB do
+            1
+        end
+        if STDA 0 = STDB 0 = and do
+            0
+        end 
+        release STDA
+        release STDB
+    else
+        "Stack Error" "Stack Underflow" error
+    end
+end

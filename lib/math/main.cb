@@ -1,0 +1,68 @@
+;; Crowbar math lib
+
+;; Square a number
+fn square
+    dup *
+end
+
+;; Absolute value
+fn abs
+    store x
+    if x 0 < do
+        0 x - 
+    else
+        x
+    end
+    release x
+end
+
+;; Square root
+fn sqrt
+    store x
+    if x 0 > do
+        x
+    else
+        "ValueError" "Cannot take sqrt of negative number" error
+    end
+    1 store guess
+    50 store n
+    while n 0 > do
+        guess x guess / + 2 / store guess
+        n 1 - store n
+    end
+    guess
+end
+
+;; Power function: x y pow -> x^y
+fn pow
+    store exponent
+    store base
+    1 store result
+    0 store counter
+    while counter exponent < do
+        result base * store result
+        counter 1 + store counter
+    end
+    release counter
+    release exponent
+    release base
+    result
+end
+
+;; Natural logarithm (rough approximation)
+fn ln
+    store x
+    if x 0 <= do
+        "Value Error" "what" error
+    end
+    ;; Using simple iterative approximation
+    0.0 store result
+    1 store i
+    while i 10000 < do
+        1 i / x 1 + / store term
+        result term + store result
+        i 1 + store i
+    end
+    release i
+    result
+end

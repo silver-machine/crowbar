@@ -1203,6 +1203,9 @@ def parse(tokens):
             elif value == "trace":
                 trace = not trace
 
+            elif value in ("do", "end", "else"):
+                error("Syntax Error", f"'{value}' found where not expected")
+
             else:
                 error("Syntax Error", f"Unknown/undefined identifier '{value}'")
 
