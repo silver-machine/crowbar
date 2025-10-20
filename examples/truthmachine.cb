@@ -1,0 +1,14 @@
+use std
+"1/0: " ask store a
+if a isnumeric do
+    a toint store a
+else
+    "Only numbers" . quit
+end
+if a 0 = do
+    0 . quit
+else
+    while 1 do
+        1 .
+    end
+end

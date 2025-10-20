@@ -1,0 +1,13 @@
+;; Simple Number Guessing Game
+
+"Guess the number (1-10)" .
+
+"> " ask toint store num
+9 rand 1 + store r
+
+if r num = do
+    "You guessed correctly :) !" .
+
+else
+    "You guessed incorrectly :(" .
+end

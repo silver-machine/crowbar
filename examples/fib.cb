@@ -1,0 +1,13 @@
+"How many? " ask toint store n
+0 store a
+1 store b
+b store next
+1 store count
+
+while count n <= do
+    next tostr "  " && ,
+    count 1 + store count
+    b store a
+    next store b
+    a b + store next
+end
