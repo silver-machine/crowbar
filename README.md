@@ -17,4 +17,4 @@ end
 
 ## Installing
 
-I recommend you use `pyinstaller --onefile main.py` to compile it all into one file, then add the project folder to your path.
+Compile using `pyinstaller --onefile main.py`, then find the executable and rename it to crowbar. Then, add this folder to your path variable.
