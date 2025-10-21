@@ -116,10 +116,13 @@ def parse(tokens):
             if value in functions:
                 try: 
                     prev = running
+                    prev_vars = variables.copy()
+                    variables = {}
                     fn = functions[value]
                     if callable(fn):
                         set_running(value)
                         fn()
+                    variables = prev_vars
                     set_running(prev)
                 except RecursionError: error("Function Error", "Maximum recursion exceeded")
 

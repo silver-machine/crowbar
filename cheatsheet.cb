@@ -1,22 +1,139 @@
-;; Single line comment
+;; This is a comment
+:: This is
+a multiline comment ::
 
-:: Multi line
-comment ::
+;; Everything happens on the stack
 
-;; Constants, variables, and functions
+5 10 + .       ;; prints 15
+2 3 * 4 + .    ;; (2 * 3) + 4 = 10
 
-365 const DAYS_IN_YEAR           ;; Caps aren't needed, just tradition
+;; crowbar uses Reverse Polish Notation
+;; operators take their arguments from the stack and push results back.
 
-0 const DAYS_IN_YEAR             ;; Throws error,  constants cannot be overwritten
+;; Stack Operations
 
-release DAYS_IN_YEAR
-365 const DAYS_IN_YEAR           ;; Does not throw error, as DAYS_IN_YEAR has been released
+;; 'dup' duplicates the top of the stack
+5 dup + .      ;; prints 10
 
-1 store using_crowbar            ;; Store defines variable
-"Yes" store using_crowbar        ;; Crowbar is dynamically typed
+;; 'drop' removes the top item and returns nothing
+1 drop .       ;; return stack underflow error
 
-release using_crowbar            ;; Release works for all identifiers
+;; 'swap' swaps the top two items
+3 4 swap . .   ;; prints 3 then 4
 
-fn test_func
-    "Works!" .
+;; 'over' copies the second item to the top
+1 2 over . . . ;; prints 2 1 2
+
+;; Arithmetic + Logic
+
+;; logic relies on truthy values
+;; a 'truthy' value is anything isn't 0, empty or falsey
+
+;; + - * / all perform basic arithmetic
+10 2 / .      ;; prints 5
+
+;; = != < <= > >= are all comparison operators
+5 5 = .       ;; prints 1 (truthy)
+1 2 = .       ;; prints 0 (falsey)
+
+;; '&&' is string concatenation
+"Hi" "!" && . ;; prints Hi!
+
+;; 'and', 'or' and 'not' come from the 'std' library
+1 0 and .     ;; prints 0
+
+;; Variables + Constants
+
+;; 'store' assigns, 'const' defines read-only, 'release' deletes
+
+10 store x     ;; x = 10
+x 5 + .        ;; prints 15
+
+"Hello" const greet
+greet .        ;; prints Hello
+release x      ;; removes variable x
+
+;; Control Flow
+
+;; If
+
+if 5 5 = do
+  "Equal!" .
+else
+  "Not equal." .
 end
+
+;; While
+
+5 store i
+while i do
+  i .
+  i 1 - store i
+end
+
+;; For
+
+5 for i
+  "Loop" .
+end
+
+;; Functions
+
+;; functions take arguments from and return to the stack
+
+fn add2
+  2 +      ;; adds 2 to top of stack
+end
+
+5 add2 .   ;; prints 7
+
+;; variables defined inside functions are local
+
+fn def_a
+  5 store a
+end
+
+a .        ;; returns unkown identifier error
+
+;; 'release' works with functions too
+
+release add2
+release def_a
+
+;; Blocks
+
+;; blocks are first-class code objects.
+
+{ 1 2 + . } eval   ;; prints 3
+
+;; you can pass them around, store them and run them later
+
+;; Strings
+
+"Hello" "World" && .        ;; HelloWorld
+"Hello, World" split "," .  ;; splits into ["Hello", " World"]
+
+;; string escape sequences: '\n', '\t', '\\', '\"', '\''.
+;; ansi escape codes: '\e[code]'
+
+;; Arrays
+
+;; arrays are lists of values
+;; use 'get', 'set', 'cut', 'add', 'pops' and 'pop' to access and modify
+
+[1 2 3] 1 get .           ;; prints 2
+[4 5 6] 0 10 set          ;; sets index 0 to 10
+
+;; Files
+
+"data.txt" "w" write      ;; open for writing
+"data.txt" append "Hello" ;;
+"data.txt" getline .      ;; read first line
+
+
+;; Misc
+
+5 rand         ;; pushes random number 0-5
+5 wait         ;; Sleeps 5 seconds
+"String " type ;; Prints data type (string)
+"1 1 + ." eval ;; Executed block or string as code

@@ -17,7 +17,7 @@ end
 
 ## Learning Crowbar
 
-`examples/` has a few simple examples that show how to use Crowbar. The [cheatsheet](cheatsheet.cb) is useful for quick references. The `help` library is simple but works too.
+`examples/` has a few simple examples that show how to use Crowbar. The [cheatsheet](cheatsheet.cb) is useful for quick references. The `help` library (WIP) is can help with learning the base keywords.
 
 ## Installing
 
