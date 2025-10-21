@@ -209,7 +209,7 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                if not isinstance(a, (int, float)) and isinstance(b, (int, float)):
+                if not (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     error("Type Error", f"'{value}' keyword expects two integers or floats")
                 else:
                     stack.push(a + b)
@@ -224,7 +224,7 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+                if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(a - b)
                 else:
                     error("Type Error", f"{value} expects numbers")
@@ -240,7 +240,7 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+                if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(a * b)
                 else:
                     error("Type Error", f"{value} expects numbers")
@@ -255,7 +255,7 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+                if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(a / b)
                 else:
                     error("Type Error", f"{value} expects 2 integers")
@@ -282,7 +282,7 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+                if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(1 if a < b else 0)
                 else:
                     error("Type Error", f"{value} expects 2 integers")
@@ -298,7 +298,7 @@ def parse(tokens):
                 b = stack.pop()
                 a = stack.pop()
 
-                if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+                if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(1 if a > b else 0)
                 else:
                     error("Type Error", f"{value} expects 2 integers")
@@ -329,7 +329,7 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+                if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(1 if a <= b else 0)
                 else:
                     error("Type Error", f"{value} expects 2 integers")
@@ -344,7 +344,7 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+                if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(1 if a >= b else 0)
                 else:
                     error("Type Error", f"{value} expects 2 integers")
@@ -577,9 +577,9 @@ def parse(tokens):
                     fname = name_val
                 elif name_type == "ID":
                     if name_val in variables:
-                        fname = variables[fname]
+                        fname = variables[name_val]
                     elif name_val in constants:
-                        fname = constants[fname]
+                        fname = constants[name_val]
                 else:
                     error("Syntax Error", "File name must be variable, constant, or stringß")
 
