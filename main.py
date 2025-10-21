@@ -71,7 +71,7 @@ def run(f):
 
 
 def add(src, name):
-    # adds library to ~/crowbar/lib/<name>/ and registers it in env
+    # adds library to (crowbar)/lib/<name>/ and registers it in env
     library_directory = os.path.join("lib", name)
 
     if not os.path.exists(src):
@@ -92,7 +92,7 @@ def add(src, name):
     with open("env", "r") as env_entries:
         lines = [line.strip() for line in env_entries]
 
-    entry = f"{name} -- ~/crowbar/lib/{name}/main.cb"
+    entry = f"{name} -- {os.getcwd()}lib/{name}/main.cb"
 
     if entry not in lines:
         with open("env", "a") as f:

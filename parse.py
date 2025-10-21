@@ -518,17 +518,17 @@ def parse(tokens):
 
                 name_type, name_val = tokens[i + 1]
                 if name_type == "STRING":
-                    fname = name_val.strip('"').strip("'")
+                    fname = name_val
                 elif name_type == "ID":
                     fname = name_val
                 else:
                     error("Syntax Error", "Library name must be string or identifier")
 
                 handle = None
-                cbarpath = os.path.expanduser("~/crowbar")
+                cbarpath = os.getcwd()
                 envpath = os.path.join(cbarpath, "env")
 
-                # 1 Check env
+                print(f"Envpath {envpath}")
                 if os.path.exists(envpath):
                     with open(envpath) as f:
                         for line in f:
@@ -536,10 +536,10 @@ def parse(tokens):
                                 continue
                             name, path = line.strip().split(" -- ", 1)
                             if name == fname:
-                                handle = os.path.abspath(os.path.expanduser(path))
+                                handle = os.path.abspath(os.path.join(cbarpath, path))
                                 break
-
-                # 2 Check sibling folder relative to currentdir
+                
+                print(f"Handle after env check: {handle}")
                 if handle is None and currentdir:
                     sibling_path = os.path.join(currentdir, fname)
                     if os.path.isfile(sibling_path):
