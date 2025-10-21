@@ -25,7 +25,7 @@ Compile using `pyinstaller --onefile main.py`, then find the executable and rena
 
 ## TODO
 
-- Write `cheatsheet.cb`
+- Finish `cheatsheet.cb`
 - Improve examples
 - Finish `help` library
 - Add transpiler

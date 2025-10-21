@@ -18,7 +18,7 @@ def lex(source: str):
             i += 1
             continue
 
-        elif char.isdigit() or char == "-":
+        elif char.isdigit() or (char == "-" and i + 1 < len(source) and source[i + 1].isdigit()):
             num = char
             i += 1
             while i < len(source) and (source[i].isdigit() or source[i] == "."):
