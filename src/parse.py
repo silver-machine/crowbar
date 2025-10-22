@@ -507,9 +507,9 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                stack.push(b)
                 stack.push(a)
                 stack.push(b)
+                stack.push(a)
 
             elif value == "clearscr":
                 if platform.system() != "Windows": os.system("clear")
