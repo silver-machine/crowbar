@@ -117,7 +117,7 @@ def new(name):
 
 def libs():
     # lists libraries in lib
-    envpath = os.path.expanduser("~/crowbar/env")
+    envpath = os.getcwd() + "/env"
     if os.path.exists(envpath):
         with open(envpath) as f:
             for line in f.readlines():

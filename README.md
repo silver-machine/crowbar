@@ -2,9 +2,10 @@
 
 ## Overview
 
-Crowbar is a stack-based interpreted language. Originally, it was meant for ascii roguelike programming, the `clearscr` keyword being a remnant of that, but eventually it became the sort of general purpose/toy language it is now.
+Crowbar is a stack-based interpreted language. Originally, I meant for it to be for ASCII roguelike programming (the `clearscr` keyword is a remnant of that), but over time it has become a sort of general purpose/toy language.
 
 ## Example Code
+
 ```py
 ;; hello world x times
 
@@ -13,6 +14,15 @@ Crowbar is a stack-based interpreted language. Originally, it was meant for asci
 x for i
   i tostr ": Hello, World" && .
 end
+```
+
+## Usage
+
+```
+crowbar                     - opens crowbar REPL
+crowbar run <file>          - runs <file>
+crowbar add <source> <name> - adds <source> to libraries with name <name>
+crowbar list                - lists registered libraries
 ```
 
 ## Learning Crowbar
