@@ -43,7 +43,7 @@ def error(error_type, error_text):
     text = f"\033[0;31m\033[1m{error_type}: \033[0m{error_text} (on line {str(line_number)}"
 
     if errtoken:
-        text += f" / from token '\033[0;35m{errtoken}\033[0m'"
+        text += f" / from token '\033[0;31m\033[1m{errtoken}\033[0m'"
 
     if len(running) > 0:
         text += f" / whilst in \033[0;35m{running}\033[0m"

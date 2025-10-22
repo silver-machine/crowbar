@@ -71,7 +71,7 @@ def format_data(data):
         for token in data[1]:
             t += token[1] + " "
         t += "}"
-                    
+
     elif isinstance(data, list):
         t += "["
         d = 0
@@ -279,10 +279,12 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
-                    stack.push(a / b)
-                else:
+                if not (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     error("Type Error", f"{value} expects 2 integers")
+                if not (a == b > 0):
+                    error("Zero Division Error", "Division by zero")
+                else:
+                    stack.push(a / b)
 
             elif value == "=":
                 # x y = / checks if x is equal to y, pushes result to stack
