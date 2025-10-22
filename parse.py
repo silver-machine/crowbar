@@ -1,6 +1,6 @@
-from error import error, set_running, running
-from stack import Stack
-from lex import lex
+from error import *
+from stack import *
+from lex import *
 
 from sys import argv, exit
 from time import sleep
@@ -68,10 +68,11 @@ def parse_array(tokens, start_index, open, close):
 stack = Stack()
 
 def parse(tokens):
-    global stack, variables, functions, constants, currentdir, trace
+    global stack, variables, functions, constants, currentdir, trace, line_number
     i = 0
     while i < len(tokens):
         ttype, value = tokens[i]
+        set_errtoken(value)
 
         if trace and ttype != "NEWLINE":
             print(f"\033[0;35m\033[1m{ttype}\033[0m, \033[0;35m\033[1m{value}\033[0m")
@@ -528,7 +529,6 @@ def parse(tokens):
                 cbarpath = os.getcwd()
                 envpath = os.path.join(cbarpath, "env")
 
-                print(f"Envpath {envpath}")
                 if os.path.exists(envpath):
                     with open(envpath) as f:
                         for line in f:
@@ -538,14 +538,12 @@ def parse(tokens):
                             if name == fname:
                                 handle = os.path.abspath(os.path.join(cbarpath, path))
                                 break
-                
-                print(f"Handle after env check: {handle}")
+
                 if handle is None and currentdir:
                     sibling_path = os.path.join(currentdir, fname)
                     if os.path.isfile(sibling_path):
                         handle = os.path.expanduser(sibling_path)
 
-                # 3 Check lib folder relative to Crowbar base
                 if handle is None:
                     lib_path = os.path.join(cbarpath, "lib", fname, "main.cb")
                     if os.path.isfile(lib_path):
@@ -554,12 +552,14 @@ def parse(tokens):
                 if handle is None:
                     error("File Error", f"Library '{fname}' not found (searched in env, sibling folder, and lib folder)")
 
-                # parse the library
                 prevdir = currentdir
                 currentdir = os.path.dirname(os.path.abspath(handle))
                 with open(handle, "r") as f:
                     content = f.read()
+                
+                split_line()
                 parse(lex(content))
+                return_line()
                 currentdir = prevdir
 
                 i += 1
@@ -1116,10 +1116,11 @@ def parse(tokens):
                     i += 1
                     continue
                 else:
+                    y = stack.pop()
                     x = stack.pop()
 
-                    if type(c) == type(s) == str:
-                        stack.push(s.split(c))
+                    if type(x) == type(y) == str:
+                        stack.push(y.split(x))
                     else:
                         error("Type Error", f"{value} expects 2 strings")
             

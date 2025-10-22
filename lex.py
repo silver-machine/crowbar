@@ -1,4 +1,4 @@
-from error import error, increment_line
+from error import *
 
 def lex(source: str):
     tokens = []
