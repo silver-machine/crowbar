@@ -1,6 +1,6 @@
-from lex import *
-from parse import *
-from error import *
+from src.lex import *
+from src.parse import *
+from src.error import *
 
 from sys import argv
 import os

@@ -1,4 +1,4 @@
-from error import *
+from src.error import *
 
 def lex(source: str):
     tokens = []

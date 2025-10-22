@@ -1,6 +1,6 @@
-from error import *
-from stack import *
-from lex import *
+from src.parse import *
+from src.stack import *
+from src.error import *
 
 from sys import argv, exit
 from time import sleep

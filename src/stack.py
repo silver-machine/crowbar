@@ -1,4 +1,4 @@
-from error import error
+from src.error import *
 
 class Stack:
     def __init__(self):
