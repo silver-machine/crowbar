@@ -64,6 +64,29 @@ def parse_array(tokens, start_index, open, close):
         i += 1
     error("Syntax Error", "Unterminated array literal")
 
+def format_data(data):
+    t = ""
+    if isinstance(data, tuple) and data[0] == "BLOCK":
+        t += "{"
+        for token in data[1]:
+            t += token[1] + " "
+        t += "}"
+                    
+    elif isinstance(data, list):
+        t += "["
+        d = 0
+        for item in data:
+            item = str(item)
+            if not d == len(data) - 1:
+                t += item + " "
+            else:
+                t += item
+            d += 1
+        t += "]"
+    else:
+        t = data
+    
+    return t
 
 stack = Stack()
 
@@ -372,29 +395,8 @@ def parse(tokens):
                     error("Stack Error", "Stack underflow")
                     i += 1
                     continue
-
-                s = stack.pop()
-                t = ""
-
-                if isinstance(s, tuple) and s[0] == "BLOCK":
-                    for token in s[1]:
-                        t += token[1] + " "
                 
-                elif isinstance(s, list):
-                    t += "["
-                    d = 0
-                    for item in s:
-                        item = str(item)
-                        if not d == len(s) - 1:
-                            t += item + " "
-                        else:
-                            t += item
-                        d += 1
-                    t += "]"
-                else:
-                    t = s
-                
-                print(t)
+                print(format_data(stack.pop()))
 
             elif value == ",":
                 # x , / prints x without newline

@@ -12,7 +12,7 @@ def repl():
     reset_line()
     set_running("<REPL>")
 
-    print("Crowbar REPL")
+    print(f"Crowbar REPL\nType !stack to view the stack")
 
     buffer = ""
     depth = 0
@@ -20,15 +20,19 @@ def repl():
     while True:
         reset_line()
 
-        prompt = "  " if depth > 0 else "\033[0;35m>\033[0m "
+        prompt = "    " if depth > 0 else f"{len(stack.stack)} \033[0;35m>\033[0m "
         try:
             inp = input(prompt)
+            if inp.lower() == "!stack":
+                print(format_data(stack.stack))
+                continue
             buffer += inp + "\n"
         except EOFError:
             error_quit_true()
             error("\nEOF Error", "End of file read")
 
         try:
+            set_running("<REPL>")
             tokens = lex(buffer)
         except Exception as e:
             print(f"Lexing error: {e}")
