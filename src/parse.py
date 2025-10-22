@@ -1,4 +1,4 @@
-from src.parse import *
+from src.lex import lex
 from src.stack import *
 from src.error import *
 
