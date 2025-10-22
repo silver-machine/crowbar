@@ -558,6 +558,7 @@ def parse(tokens):
                     content = f.read()
                 
                 split_line()
+                set_running(fname)
                 parse(lex(content))
                 return_line()
                 currentdir = prevdir
