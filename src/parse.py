@@ -2,11 +2,10 @@ from src.lex import lex
 from src.stack import *
 from src.error import *
 
-from sys import argv, exit
 from time import sleep, perf_counter
-import os, random, platform
+import os, random, platform, sys
 
-constants = {"ARGS": argv[2:]}
+constants = {"ARGS": sys.argv[2:]}
 variables = {}
 globalvars = {}
 functions = {}
@@ -574,7 +573,11 @@ def parse(tokens):
                     error("Syntax Error", "Library name must be string or identifier")
 
                 handle = None
-                cbarpath = os.getcwd()
+                if getattr(sys, 'frozen', False):
+                    # Running as PyInstaller bundle
+                    cbarpath = sys._MEIPASS  # Temporary folder PyInstaller extracts to
+                else:
+                    cbarpath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
                 envpath = os.path.join(cbarpath, "env")
 
                 if os.path.exists(envpath):

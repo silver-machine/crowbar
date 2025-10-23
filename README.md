@@ -25,6 +25,8 @@ crowbar add <source> <name> - adds <source> to libraries with name <name>
 crowbar list                - lists registered libraries
 ```
 
+For now, I have created a .bat file that runs `python main.py` called crowbarBP (bypass). I will add an actual execetuble with the first release.
+
 ## Learning Crowbar
 
 `examples/` has a few simple examples that show how to use Crowbar. The [cheatsheet](cheatsheet.md) is useful for quick references. The `help` library (WIP) is can help with learning the base keywords.
