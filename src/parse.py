@@ -1206,7 +1206,7 @@ def parse(tokens):
             
             elif value == "reset":
                 functions = {}
-                constants = {"ARGS": argv[2:]}
+                constants = {"ARGS": sys.argv[2:]}
                 variables = {}
                 globalvars = {}
             
