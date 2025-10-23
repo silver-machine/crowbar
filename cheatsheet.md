@@ -4,7 +4,8 @@
 
 * **Stack-based**: everything is pushed to the stack, operations pop and push as needed.
 * **Comments**: `;;` for single line, `:: ... ::` for multi line.
-* **Variables**: mutable, stored via `store`, only available in the the space that their defined.
+* **Local Variables**: mutable, stored via `store`, only available in the the space that their defined.
+* **Global Variables**: mutable, stored via `global`, available everywhere.
 * **Constants**: immutable after definition via `const`.
 * **Functions**: defined via `fn ... end`.
 

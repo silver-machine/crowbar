@@ -8,6 +8,7 @@ import os, random, platform
 
 constants = {"ARGS": argv[2:]}
 variables = {}
+globalvars = {}
 functions = {}
 stack = Stack()
 trace = False
@@ -153,6 +154,9 @@ def parse(tokens):
             # Push variable to stack
             elif value in variables:
                 stack.push(variables[value])
+            
+            elif value in globalvars:
+                stack.push(globalvars[value])
 
             # Push constant to stack
             elif value in constants:
@@ -174,6 +178,24 @@ def parse(tokens):
                 else:              
                     val = stack.pop()
                     variables[name_val] = val
+                    i += 1
+            
+            elif value == "global":
+                # x store y / stores data x to variable y
+                if i + 1 >= len(tokens):
+                    error("Syntax Error", f"Expected variable name after '{value}' keyword")
+
+                name_type, name_val = tokens[i + 1]
+                
+                if name_type != "ID":
+                    error("Type Error", "Variable name must be identifier")
+                elif name_val in constants:
+                    error("Definition Error", f"'{name_val}' already defined (as constant)")
+                elif name_val in functions:
+                    error("Definition Error", f"'{name_val}' already defined (as function)")
+                else:              
+                    val = stack.pop()
+                    globalvars[name_val] = val
                     i += 1
 
             elif value == "const":
