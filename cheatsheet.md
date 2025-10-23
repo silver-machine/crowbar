@@ -51,7 +51,7 @@
 
 ## Data Types
 
-* **Numbers**: integers or floats
+* **Numbers**: integers or floats. Adding 'k' or 'm' multiplies number by 100 or 1000000
 * **Strings**: `"..."`
 * **Arrays**: `[...]`
 * **Blocks**: `{ ... }` for code

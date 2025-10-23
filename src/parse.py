@@ -106,7 +106,7 @@ def format_data(data):
 stack = Stack()
 
 def parse(tokens):
-    global stack, variables, functions, constants, currentdir, trace, line_number, time_trace
+    global stack, variables, globalvars, functions, constants, currentdir, trace, line_number, time_trace
     i = 0
     while i < len(tokens):
         ttype, value = tokens[i]

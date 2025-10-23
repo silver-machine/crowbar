@@ -24,6 +24,13 @@ def lex(source: str):
             while i < len(source) and (source[i].isdigit() or source[i] == "."):
                 num += source[i]
                 i += 1
+
+            if i < len(source) and source[i].lower() in "km":
+                suffix = source[i]
+                i += 1
+                factor = {"k": 1000, "m": 1_000_000}[suffix]
+                num = str(int(float(num) * factor))
+
             tokens.append(("NUMBER", num))
             continue
 
