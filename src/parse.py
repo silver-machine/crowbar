@@ -563,7 +563,9 @@ def parse(tokens):
                 
                 split_line()
                 set_running(fname)
+                prev_vars = variables.copy()
                 parse(lex(content))
+                variables = prev_vars
                 return_line()
                 currentdir = prevdir
 
