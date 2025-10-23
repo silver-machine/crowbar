@@ -1224,7 +1224,7 @@ def parse(tokens):
                     if name_type != "ID":
                         error("Type Error", "Variable/constant/function name must be identifier")
                     
-                    if name_val in variables or name_val in constants or name_val in functions:
+                    if name_val in variables or name_val in constants or name_val in functions or name_val in globalvars:
                         stack.push(1)
                     else:
                         stack.push(0)
