@@ -33,6 +33,19 @@ crowbar list                - lists registered libraries
 
 Compile using `pyinstaller --onefile main.py`, then find the executable and rename it to `crowbar`. Then, add the folder to your path variable. The most important files/folders are `env`, the executable and `lib/`.
 
+## Speed
+
+Running this in the REPL:
+```
+!time 10000 for i
+    pass
+    end 
+!time
+```
+
+Gives this output:
+`Execution time: 0.018350 seconds`
+
 ## TODO
 
 - Improve examples/

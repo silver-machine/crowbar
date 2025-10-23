@@ -1205,6 +1205,7 @@ def parse(tokens):
                 functions = {}
                 constants = {"ARGS": argv[2:]}
                 variables = {}
+                globalvars = {}
             
             elif value == "release":
                 # release x (id) / removes x from constants variables or functions

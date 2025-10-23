@@ -122,7 +122,7 @@
 
 | Keyword    | Usage       | Effect                                       |
 | ---------- | ----------- | -------------------------------------------- |
-| `reset`    | `reset`     | Clear variables/functions, reset constants   |
+| `reset`    | `reset`     | Clear variables/functions/constants/globals  |
 | `release`  | `x release` | Remove x from vars, consts, functions        |
 | `defined`  | `defined x` | Push 1 if x exists                           |
 | `trace`    | `trace`     | Toggle debug trace                           |
