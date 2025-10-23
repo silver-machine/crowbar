@@ -12,7 +12,7 @@ def repl():
     reset_line()
     set_running("<REPL>")
 
-    print(f"Crowbar REPL\nType !stack to view the stack, and !trace to toggle tracing")
+    print(f"Crowbar REPL\nType !stack to view the stack, !trace to toggle tracing and !time to toggle timing")
 
     buffer = ""
     depth = 0

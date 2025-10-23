@@ -3,7 +3,7 @@ from src.stack import *
 from src.error import *
 
 from sys import argv, exit
-from time import sleep
+from time import sleep, perf_counter
 import os, random, platform
 
 constants = {"ARGS": argv[2:]}
@@ -13,6 +13,20 @@ functions = {}
 stack = Stack()
 trace = False
 currentdir = ""
+
+time_trace = True
+end_time = 0
+start_time = 0
+
+def trace_time():
+    global time_trace, end_time, start_time
+    time_trace = not time_trace
+    if time_trace:
+        end_time = perf_counter()
+        elapsed = end_time - start_time
+        print(f"Execution time: {elapsed:.6f} seconds")
+    else:
+        start_time = perf_counter()
 
 def set_current_dir(setto):
     global currentdir
@@ -92,7 +106,7 @@ def format_data(data):
 stack = Stack()
 
 def parse(tokens):
-    global stack, variables, functions, constants, currentdir, trace, line_number
+    global stack, variables, functions, constants, currentdir, trace, line_number, time_trace
     i = 0
     while i < len(tokens):
         ttype, value = tokens[i]
@@ -1264,6 +1278,9 @@ def parse(tokens):
             
             elif value == "!trace":
                 trace = not trace
+            
+            elif value == "!time":
+                trace_time()
 
             elif value in ("do", "end", "else"):
                 error("Syntax Error", f"'{value}' found where not expected")
