@@ -42,7 +42,7 @@ fn std_inargs
     release STDINARGS
 end
 
-fn std_empty
+fn std_emptystack
     depth for i
         drop
     end

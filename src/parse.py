@@ -99,7 +99,7 @@ def parse(tokens):
         set_errtoken(value)
 
         if trace and ttype != "NEWLINE":
-            print(f"\033[0;35m\033[1m{ttype}\033[0m, \033[0;35m\033[1m{value}\033[0m")
+            print(f"\033[0;35m\033[1m{ttype}\033[0m: \033[0;35m\033[1m{value}\033[0m")
 
         if ttype == "NUMBER":
             stack.push(float(value) if "." in value else int(value))
@@ -1259,7 +1259,10 @@ def parse(tokens):
                 else:
                     error(a, b)
             
-            elif value == "trace":
+            elif value == "!stack":
+                print(format_data(stack.stack))
+            
+            elif value == "!trace":
                 trace = not trace
 
             elif value in ("do", "end", "else"):

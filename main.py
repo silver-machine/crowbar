@@ -12,7 +12,7 @@ def repl():
     reset_line()
     set_running("<REPL>")
 
-    print(f"Crowbar REPL\nType !stack to view the stack")
+    print(f"Crowbar REPL\nType !stack to view the stack, and !trace to toggle tracing")
 
     buffer = ""
     depth = 0
@@ -23,9 +23,6 @@ def repl():
         prompt = "    " if depth > 0 else f"{len(stack.stack)} \033[0;35m>\033[0m "
         try:
             inp = input(prompt)
-            if inp.lower() == "!stack":
-                print(format_data(stack.stack))
-                continue
             buffer += inp + "\n"
         except EOFError:
             error_quit_true()

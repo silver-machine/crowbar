@@ -140,3 +140,4 @@
 * Blocks `{}` are first-class; they can be pushed, popped, or `eval`ed.
 * Constants and variables are distinct: `const` vs `store`.
 * Functions are lambdas: capture variables at call time (stack-aware).
+* Use `!stack` and `!trace` for debugging.
