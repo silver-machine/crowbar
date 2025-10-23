@@ -175,6 +175,8 @@ def parse(tokens):
                     error("Definition Error", f"'{name_val}' already defined (as constant)")
                 elif name_val in functions:
                     error("Definition Error", f"'{name_val}' already defined (as function)")
+                elif name_val in globalvars:
+                    error("Definition Error", f"'{name_val}' already defined (as global variable)")
                 else:              
                     val = stack.pop()
                     variables[name_val] = val
@@ -193,6 +195,8 @@ def parse(tokens):
                     error("Definition Error", f"'{name_val}' already defined (as constant)")
                 elif name_val in functions:
                     error("Definition Error", f"'{name_val}' already defined (as function)")
+                elif name_val in variables:
+                    error("Definition Error", f"'{name_val}' already defined (as local variable)")
                 else:              
                     val = stack.pop()
                     globalvars[name_val] = val
@@ -212,7 +216,11 @@ def parse(tokens):
                 if name_val in constants:
                     error("Definition Error", f"Constant '{name_val}' already defined")
                 elif name_val in variables:
-                    error("Definition Error", f"'{name_val}' already defined (as variable)")        
+                    error("Definition Error", f"'{name_val}' already defined (as variable)")   
+                elif name_val in functions:
+                    error("Definition Error", f"'{name_val}' already defined (as function)")
+                elif name_val in globalvars:
+                    error("Definition Error", f"'{name_val}' already defined (as global variable)")     
                 else:
                     constants[name_val] = val
                 i += 1
@@ -609,6 +617,8 @@ def parse(tokens):
                         fname = variables[name_val]
                     elif name_val in constants:
                         fname = constants[name_val]
+                    elif name_val in globalvars:
+                        fname = globalvars[name_val]
                 else:
                     error("Syntax Error", "File name must be variable, constant, or stringß")
 
@@ -635,6 +645,8 @@ def parse(tokens):
                         fname = variables[name_val]
                     elif name_val in constants:
                         fname = constants[name_val]
+                    elif name_val in globalvars:
+                        fname = globalvars[name_val]
                     else:
                         error("File Error", f"Unknown identifier '{name_val}'")
                         i += 1
@@ -673,6 +685,8 @@ def parse(tokens):
                         fname = variables[name_val]
                     elif name_val in constants:
                         fname = constants[name_val]
+                    elif name_val in globalvars:
+                        fname = globalvars[name_val]
                     else:
                         error("File Error", f"Unknown identifier '{name_val}'")
                         i += 1
@@ -717,6 +731,8 @@ def parse(tokens):
                         fname = variables[name_val]
                     elif name_val in constants:
                         fname = constants[name_val]
+                    elif name_val in globalvars:
+                        fname = globalvars[name_val]
                     else:
                         error("File Error", f"Unknown identifier '{name_val}'")
                         i += 1
@@ -758,6 +774,8 @@ def parse(tokens):
                         fname = variables[name_val]
                     elif name_val in constants:
                         fname = constants[name_val]
+                    elif name_val in globalvars:
+                        fname = globalvars[name_val]
                     else:
                         error("File Error", f"Unknown identifier '{name_val}'")
                         i += 1
@@ -1189,6 +1207,8 @@ def parse(tokens):
                     del constants[name_val]
                 elif name_val in functions:
                     del functions[name_val]
+                elif name_val in globalvars:
+                    del globalvars[name_val]
                 else:
                     error("Syntax Error", f"Variable/constant/function {name_val} not found")
                 i += 1
