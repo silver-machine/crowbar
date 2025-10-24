@@ -876,7 +876,7 @@ def parse(tokens):
                 # x (int) for y (id) ... end
 
                 if i + 1 >= len(tokens):
-                    error("Syntax Error", "Expected increment variable after for")
+                    error("Syntax Error", "Expected increment variable")
                     i += 1
                     continue
 
@@ -912,7 +912,6 @@ def parse(tokens):
 
                 i = j
                 continue
-
 
             elif value == "while":
                 # while x do .. end
