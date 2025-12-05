@@ -50,3 +50,5 @@ Gives this output:
 - Syntax highlighter
 - Change syntax for file keywords
 - Create editor
+- Add bytecode support
+- Fix import
