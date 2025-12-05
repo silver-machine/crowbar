@@ -1,3 +1,5 @@
+from time import sleep, perf_counter
+
 time_trace = True
 end_time = 0
 start_time = 0

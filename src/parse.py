@@ -3,7 +3,6 @@ from src.stack import *
 from src.error import *
 from src.utils import *
 
-from time import sleep, perf_counter
 import os, random, platform, sys
 
 constants = {"ARGS": sys.argv[2:]}
