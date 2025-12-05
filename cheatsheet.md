@@ -136,8 +136,8 @@
 
 ## Tips
 
-* Everything operates on the **stack**; stay aware of it.
-* Blocks `{}` are first-class; they can be pushed, popped, or `eval`ed.
+* Everything operates on the **stack**. Stay aware of it.
+* Blocks `{}` are first-class; they can be pushed, popped, or `eval`uated.
 * Constants and variables are distinct: `const` vs `store`.
-* Functions are lambdas: capture variables at call time (stack-aware).
+* Functions are lambdas: capture variables at call time.
 * Use `!stack`, `!trace` and `!time` for debugging.
