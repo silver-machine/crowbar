@@ -118,7 +118,7 @@
 
 ---
 
-## Environment / Utility
+## Utility
 
 | Keyword    | Usage       | Effect                                       |
 | ---------- | ----------- | -------------------------------------------- |
