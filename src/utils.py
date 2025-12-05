@@ -1,3 +1,7 @@
+from src.stack import *
+from src.error import *
+from src.parse import *
+
 from time import sleep, perf_counter
 
 time_trace = True
@@ -50,7 +54,6 @@ def parse_array(tokens, start_index, open, close):
             arr.append(sub_arr)
             i = new_i
         else:
-            # push simple literals into a temp stack
             if t == "NUMBER":
                 arr.append(float(v) if "." in v else int(v))
             elif t == "STRING":
