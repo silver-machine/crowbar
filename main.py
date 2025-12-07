@@ -12,7 +12,8 @@ def repl():
     reset_line()
     set_running("<REPL>")
 
-    print(f"Crowbar REPL\nType !stack to view the stack, !trace to toggle tracing and !time to toggle timing")
+    print(f"""Crowbar REPL
+Type !stack to view the stack, !trace to toggle tracing and !time to toggle timing""")
 
     buffer = ""
     depth = 0
@@ -72,7 +73,7 @@ def run(f):
 
 
 def add(src, name):
-    # adds library to (crowbar)/lib/<name>/ and registers it in env
+    # adds a library to (crowbar)/lib/<name>/ and registers it in env
     library_directory = os.path.join("lib", name)
 
     if not os.path.exists(src):
@@ -104,7 +105,7 @@ def add(src, name):
 
 
 def new(name):
-    # creates new crowbar project folder called <name>
+    # creates a new crowbar project folder called <name>
     os.makedirs(name, exist_ok=True)
 
     mainfile = os.path.join(name, "main.cb")
