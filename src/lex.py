@@ -25,10 +25,10 @@ def lex(source: str):
                 num += source[i]
                 i += 1
 
-            if i < len(source) and source[i].lower() in "km":
+            if i < len(source) and source[i].lower() in "hkm":
                 suffix = source[i]
                 i += 1
-                factor = {"h": 100,"k": 1000, "m": 1_000_000}[suffix]
+                factor = {"h": 100,"k": 1000, "m": 1_000_000, "b": 1_000_000_000}[suffix]
                 num = str(int(float(num) * factor))
 
             tokens.append(("NUMBER", num))

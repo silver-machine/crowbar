@@ -485,8 +485,7 @@ def parse(tokens):
 
                 handle = None
                 if getattr(sys, 'frozen', False):
-                    # Running as PyInstaller bundle
-                    cbarpath = sys._MEIPASS  # Temporary folder PyInstaller extracts to
+                    cbarpath = sys._MEIPASS
                 else:
                     cbarpath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
                 envpath = os.path.join(cbarpath, "env")
