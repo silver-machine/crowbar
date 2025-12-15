@@ -114,6 +114,7 @@
 | `toint`     | `x toint`     | Convert numeric string → int     |
 | `isalpha`   | `x isalpha`   | Push 1 if string x is alphabetic |
 | `isnumeric` | `x isnumeric` | Push 1 if string x is numeric    |
+| `isalnum`   | `x isalnum`   | Push 1 if string x is alphanumeric|
 | `strip`     | `x strip`     | Strip trailing whitespace        |
 
 ---
