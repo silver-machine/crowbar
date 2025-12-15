@@ -1067,6 +1067,20 @@ def parse(tokens):
                         stack.push(1 if x.isnumeric() else 0)
                     else:
                         error("Type Error", f"{value} expects 1 string")
+            
+            elif value == "isalnum":
+                # x (str) isalnum / checks if x is alphanumeric, pushes result to stack
+                if len(stack.stack) < 1:
+                    error("Stack Error", "Stack underflow")
+                    i += 1
+                    continue
+                else:
+                    x = stack.pop()
+
+                    if isinstance(x, str):
+                        stack.push(1 if x.isalnum() else 0)
+                    else:
+                        error("Type Error", f"{value} expects 1 string")
 
             elif value == "wait":
                 # x (int) wait / waits x seconds
