@@ -43,6 +43,7 @@ def extract_block(tokens, start_index, open_tokens=("fn","for","while","if"), cl
     return body, i
 
 def parse_array(tokens, start_index, open, close):
+    global variables, constants
     arr = []
     i = start_index
     while i < len(tokens):
@@ -62,7 +63,7 @@ def parse_array(tokens, start_index, open, close):
                 if v in variables:
                     arr.append(variables[v])
                 elif v in constants:
-                     arr.append(constants[v])
+                    arr.append(constants[v])
                 else:
                     arr.append(v)
         i += 1

@@ -1,6 +1,7 @@
 from src.lex import *
 from src.parse import *
 from src.error import *
+from src.utils import *
 
 from sys import argv
 import os
