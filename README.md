@@ -2,7 +2,9 @@
 
 ## Overview
 
-Crowbar is a stack-based interpreted language inspired by FORTH and Python. Originally, it was meant to be for ASCII game programming (the `clearscr` keyword is a remnant of that), but over time it has become a sort of general purpose/toy language. Keep in mind
+Crowbar (named after [Crowbar](https://en.wikipedia.org/wiki/Crowbar_(American_band)))is a stack-based interpreted language inspired by FORTH and Python. Originally, it was meant to be for ASCII roguelike games (the `clearscr` keyword is a remnant of that), but over time it has become a sort of general purpose/toy language. <br>
+
+***Keep in mind that it is still a work in progress, and that I have much to add and much to fix!***
 
 ## Example Code
 
