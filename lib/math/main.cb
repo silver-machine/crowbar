@@ -7,62 +7,77 @@ end
 
 ;; Absolute value
 fn abs
-    store x
-    if x 0 < do
-        0 x - 
+    $x
+    if @x 0 < do
+        0 @x - 
     else
-        x
+        @x
     end
     release x
 end
 
-;; Square root
+;; Square root (Newton's Method)
 fn sqrt
-    store x
-    if x 0 > do
-        x
-    else
+    $x
+    if @x 0 < do
         "ValueError" "Cannot take sqrt of negative number" error
     end
-    1 store guess
-    50 store n
-    while n 0 > do
-        guess x guess / + 2 / store guess
-        n 1 - store n
+    if @x 0 = do
+        0
+    else
+        1.0 $guess
+        50 $n
+        while @n 0 > do
+            @guess @x @guess / + 2 / $guess
+            @n 1 - $n
+        end
+        release n
+        @guess
     end
-    guess
+    release x
 end
 
 ;; Power function: x y pow -> x^y
 fn pow
-    store exponent
-    store base
-    1 store result
-    0 store counter
-    while counter exponent < do
-        result base * store result
-        counter 1 + store counter
+    $exponent
+    $base
+    1 $result
+    0 $counter
+    while @counter @exponent < do
+        @result @base * $result
+        @counter 1 + $counter
     end
     release counter
     release exponent
     release base
-    result
+    @result
 end
 
-;; Natural logarithm (rough approximation)
+;; Natural logarithm: x ln -> ln(x)
 fn ln
-    store x
-    if x 0 <= do
-        "Value Error" "what" error
+    $x
+    if @x 0 <= do
+        "ValueError" "ln expects a positive number" error
     end
-    ;; Using simple iterative approximation
-    0.0 store result
-    1 store i
-    while i 10000 < do
-        1 i / x 1 + / store term
-        result term + store result
-        i 1 + store i
+    
+    ;; Using series expansion: 2 * sum( ((x-1)/(x+1))^(2k+1) / (2k+1) )
+    @x 1 - @x 1 + / $y
+    @y dup * $y2
+    @y $term
+    @y $sum
+    1 $k
+    
+    while @k 50 < do
+        @term @y2 * $term
+        @sum @term @k 2 * 1 + / + $sum
+        @k 1 + $k
     end
-    release i
-    result
+    
+    release x
+    release y
+    release y2
+    release term
+    release k
+    
+    @sum 2 *
 end

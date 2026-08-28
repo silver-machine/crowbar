@@ -1,13 +1,12 @@
 use std
 
-"Welcome to the Crowbar help module\n'keyword' help for help on keyword" .
-
-if defined VERSION not do "v0" const VERSION end
+"Welcome to the Crowbar help module\ntype <'x' help> for help on keyword x" .
 
 fn help
     std_match
-    {"<data> store <name> | stores <data> to variable <name>" .} "store" std_case
-    {"<data> const <name> | stores <data> to constant <name>" .} "const" std_case
+    {"<data> $<name> | stores <data> to variable <name>" .} "$" std_case
+    {"<data> !<name> | stores <data> to constant <name>" .} "@" std_case
+    {"@<name> | pushes value of variable <name>" .} "@" std_case
     {"<prompt> ask | asks for input with <prompt>" .} "ask" std_case
     {"<str1> <str2> && | concatenates <str1> and <str2>" .} "&&" std_case
     {"<num1> <num2> + | adds <num1> to <num2>" .} "+" std_case
@@ -34,4 +33,6 @@ fn help
     {"use <library/file> | imports <library/file>" .} "use" std_case
     {"create 'name' | creates file with name 'name'" .} "create" std_case
     {"<x> write 'name' | writes <x> to file with name 'name'" .} "writes" std_case
+    {"x append y (id/str) / appends x to file y" .} "append" std_case
+    ;; {"" .} "" std_case
 end

@@ -1,17 +1,27 @@
 from src.error import *
 
+class Token:
+    def __init__(self, token_type, value, line):
+        self.type = token_type
+        self.value = value
+        self.line = line
+
+    def __repr__(self):
+        return f"Token({self.type}, {repr(self.value)}, line={self.line})"
+
 def lex(source: str):
     tokens = []
     i = 0
-    identchars = "+-*/=<>!.,_&?"
+    line = 1
+    identchars = "+-*/=<>!.,_&?$@%"
 
     while i < len(source):
         char = source[i]
 
         if char == "\n":
-            tokens.append(("NEWLINE", "\\n"))
-            increment_line()
-            i +=1
+            tokens.append(Token("NEWLINE", "\n", line))
+            line += 1
+            i += 1
             continue
 
         elif char.isspace():
@@ -25,13 +35,13 @@ def lex(source: str):
                 num += source[i]
                 i += 1
 
-            if i < len(source) and source[i].lower() in "hkm":
-                suffix = source[i]
+            if i < len(source) and source[i].lower() in "hkmbt":
+                suffix = source[i].lower()
                 i += 1
-                factor = {"h": 100,"k": 1000, "m": 1_000_000, "b": 1_000_000_000}[suffix]
+                factor = {"h": 100, "k": 1000, "m": 1_000_000, "b": 1_000_000_000, "t": 1_000_000_000_000}[suffix]
                 num = str(int(float(num) * factor))
 
-            tokens.append(("NUMBER", num))
+            tokens.append(Token("NUMBER", num, line))
             continue
 
         elif char.isalpha() or char == "_" or char in identchars:
@@ -40,26 +50,31 @@ def lex(source: str):
             while i < len(source) and (source[i].isalnum() or source[i] in identchars):
                 ident += source[i]
                 i += 1
-            tokens.append(("ID", ident))
+            tokens.append(Token("ID", ident, line))
             continue
 
         elif char == '"' or char == "'":
             quote = char
             i += 1
             string_val = ""
+            start_line = line
 
             while i < len(source):
                 c = source[i]
 
                 if c == quote:
                     i += 1
-                    tokens.append(("STRING", string_val))
+                    tokens.append(Token("STRING", string_val, start_line))
                     break
+
+                elif c == "\n":
+                    line += 1
+                    string_val += c
 
                 elif c == "\\":
                     i += 1
                     if i >= len(source):
-                        error("Syntax Error", "Unterminated escape sequence")
+                        error("Syntax Error", f"Unterminated escape sequence on line {line}")
 
                     next_char = source[i]
                     
@@ -72,13 +87,13 @@ def lex(source: str):
                             i += 1
 
                         if i >= len(source) or source[i] != "]":
-                            error("Syntax Error", "Unterminated escape sequence")
+                            error("Syntax Error", f"Unterminated escape sequence on line {line}")
                         
                         string_val += esc_seq
                         i += 1
                         continue
 
-                    escapes = {"n":"\n", "t":"\t", '"':'"', "'":"'", "\\":"\\"}
+                    escapes = {"n": "\n", "t": "\t", '"': '"', "'": "'", "\\": "\\"}
                     string_val += escapes.get(next_char, next_char)
 
                 else:
@@ -87,10 +102,10 @@ def lex(source: str):
                 i += 1
 
             else:
-                error("Syntax Error", "Unterminated string")
+                error("Syntax Error", f"Unterminated string starting on line {start_line}")
 
         elif char in "[](){}":
-            tokens.append(("PAREN", char))
+            tokens.append(Token("PAREN", char, line))
             i += 1
             continue
 
@@ -102,16 +117,18 @@ def lex(source: str):
         elif char == ":" and i + 1 < len(source) and source[i + 1] == ":":
             i += 2
             while i < len(source) - 1:
-                if source[i] == ":" and source[i + 1] == ":":
+                if source[i] == "\n":
+                    line += 1
+                elif source[i] == ":" and source[i + 1] == ":":
                     i += 2
                     break
                 i += 1
             else:
-                error("Syntax Error", "Unterminated multiline comment")
+                error("Syntax Error", f"Unterminated multiline comment on line {line}")
             continue
 
         else:
-            error("Syntax Error", f"Unexpected character: {char}")
+            error("Syntax Error", f"Unexpected character '{char}' on line {line}")
             i += 1
         
     return tokens

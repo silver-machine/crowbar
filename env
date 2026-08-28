@@ -1,2 +1,3 @@
 std -- lib/std/main.cb
 math -- lib/math/main.cb
+help -- lib/help/main.cb

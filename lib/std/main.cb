@@ -4,37 +4,51 @@ use "io.cb"
 use "files.cb"
 use "logic.cb"
 
-;; CONSTANTS
+if defined VERSION not do
+    "v1" %VERSION
+end
 
-if defined BLACK not do "\e[0;30m]" const BLACK end
-if defined RED not do "\e[0;31m]" const RED end
-if defined GREEN not do "\e[0;32m]" const GREEN end
-if defined BROWN not do "\e[0;33m]" const BROWN end
-if defined YELLOW not do "\e[1;33m]" const YELLOW end
-if defined BLUE not do "\e[0;34m]" const BLUE end
-if defined PURPLE not do "\e[0;35m]" const PURPLE end
-if defined CYAN not do "\e[0;36m]" const CYAN end
-if defined GREY not do "\e[0;37m]" const GREY end
-if defined GRAY not do GREY const GRAY end
+;; CONSTANTS (ANSI Colors & Styles)
 
-if defined BOLD not do "\e[1m]" const BOLD end
-if defined ITALIC not do "\e[3m]" const ITALIC end
-if defined UNDERLINE not do "\e[4m]" const UNDERLINE end
-if defined BLINK not do "\e[5m]" const BLINK end
-if defined NEGATIVE not do "\e[7m]" const NEGATIVE end
-if defined CROSSED not do "\e[9m]" const CROSSED end
+if defined BLACK not do "\e[30m]" %BLACK end
+if defined RED not do "\e[31m]" %RED end
+if defined GREEN not do "\e[32m]" %GREEN end
+if defined BROWN not do "\e[33m]" %BROWN end
+if defined YELLOW not do "\e[33m]" %YELLOW end
+if defined BLUE not do "\e[34m]" %BLUE end
+if defined PURPLE not do "\e[35m]" %PURPLE end
+if defined CYAN not do "\e[36m]" %CYAN end
+if defined GREY not do "\e[37m]" %GREY end
+if defined GRAY not do @GREY %GRAY end
 
-if defined RESET not do "\e[0m]" const RESET end
+if defined BOLD not do "\e[1m]" %BOLD end
+if defined ITALIC not do "\e[3m]" %ITALIC end
+if defined UNDERLINE not do "\e[4m]" %UNDERLINE end
+if defined BLINK not do "\e[5m]" %BLINK end
+if defined NEGATIVE not do "\e[7m]" %NEGATIVE end
+if defined CROSSED not do "\e[9m]" %CROSSED end
 
-;; MISC.
+if defined RESET not do "\e[0m]" %RESET end
+
+if defined PROMPT not do
+    depth tostr
+    @PURPLE
+    " > "
+    @RESET
+    && && &&
+    %PROMPT
+end
+
+;; MISC. UTILITIES
 
 fn std_peek
     dup .
 end
 
 fn std_inargs
-    const STDINARGS
-    if STDINARGS ARGS in do
+    ;; takes in "arg" on stack -> pushes 1 or 0
+    $STDINARGS
+    if @STDINARGS @ARGS in do
         1
     else
         0
@@ -49,23 +63,30 @@ fn std_emptystack
 end
 
 fn std_match
+    ;; "val" std_match -> sets target for std_case
     if defined STDMATCH do
         release STDMATCH
-        store STDMATCH
-    else
-        store STDMATCH
     end
+    %STDMATCH
 end
 
 fn std_case
-    ;; {code} <value> case
-    store tomatch
-    store code
+    ;; {code_block} <value> std_case
+    $tomatch
+    $code
     if defined STDMATCH do
-        if STDMATCH tomatch = do
-            code eval
+        if @STDMATCH @tomatch = do
+            @code eval
         end
     else
-        "No match defined" .
+        "Definition Error" "STD Case: No match target set with std_match" error
+    end
+    release tomatch
+    release code
+end
+
+fn dump
+    depth for x
+        drop
     end
 end

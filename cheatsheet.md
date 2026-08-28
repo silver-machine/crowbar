@@ -4,9 +4,9 @@
 
 * **Stack-based**: everything is pushed to the stack, operations pop and push as needed.
 * **Comments**: `;;` for single line, `:: ... ::` for multi line.
-* **Local Variables**: mutable, stored via `store`, only available in the the space that their defined.
-* **Global Variables**: mutable, stored via `global`, available everywhere.
-* **Constants**: immutable after definition via `const`.
+* **Local Variables**: mutable, set via `$`, only available in the the space that their defined.
+* **Global Variables**: mutable, set via `~`, available everywhere.
+* **Constants**: immutable after definition via `!`.
 * **Functions**: defined via `fn ... end`.
 
 ---
@@ -23,6 +23,17 @@
 
 ---
 
+## Variables
+
+| Keyword | Usage      | Effect                 |
+| ------- | ---------- | ---------------------- |
+| `$`     | `x $y`     | Set variable y to x    |    
+| `@`     | `@x`       | Get value of variable x|
+| `!`     | `x !y`     | Set constant y to x    |
+| `~`     | `x ~y`     | Set global variable y to x|
+
+---
+
 ## Arithmetic
 
 | Keyword | Usage    | Effect                   |
@@ -31,7 +42,8 @@
 | `-`     | `x y -`  | Subtract                 |
 | `*`     | `x y *`  | Multiply                 |
 | `/`     | `x y /`  | Divide                   |
-| `rand`  | `x rand` | Push random int `0 - x`  |
+| `roll`  | `x roll` | Push random int `0 - x`  |
+| `rand`  | `rand`   | Push random int          |
 
 ---
 
@@ -51,7 +63,7 @@
 
 ## Data Types
 
-* **Numbers**: integers or floats. Adding 'k' or 'm' multiplies number by 100 or 1000000
+* **Numbers**: integers or floats. Adding "h", "k", "m", "b" or "t" multiplies the number appropriatly (hundred, thousand etc.)
 * **Strings**: `"..."`
 * **Arrays**: `[...]`
 * **Blocks**: `{ ... }` for code
@@ -80,7 +92,7 @@
 | `,`     | `x ,`     | Print x (no newline)       |
 | `emit`  | `x emit`  | Print ASCII char of x      |
 | `ascii` | `x ascii` | Push ASCII value of char x |
-| `ask`   | `x ask`   | Prompt input with str x    |
+| `?`     | `x ?`     | Prompt input with str x    |
 
 ### File Operations
 
@@ -123,8 +135,8 @@
 
 | Keyword    | Usage       | Effect                                       |
 | ---------- | ----------- | -------------------------------------------- |
-| `reset`    | `reset`     | Clear variables/functions/constants/globals  |
-| `release`  | `x release` | Remove x from vars, consts, functions        |
+| `reset`    | `reset`     | Clear all variables/functions/constants/globals  |
+| `release`  | `release x` | Remove x from vars, consts, functions        |
 | `defined`  | `defined x` | Push 1 if x exists                           |
 | `trace`    | `trace`     | Toggle debug trace                           |
 | `clearscr` | `clearscr`  | Clear console                                |
@@ -138,7 +150,6 @@
 ## Tips
 
 * Everything operates on the **stack**. Stay aware of it.
-* Blocks `{}` are first-class; they can be pushed, popped, or `eval`uated.
-* Constants and variables are distinct: `const` vs `store`.
+* Constants and variables are distinct: `!` vs `$`.
 * Functions are lambdas: capture variables at call time.
 * Use `!stack`, `!trace` and `!time` for debugging.

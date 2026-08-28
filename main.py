@@ -34,11 +34,13 @@ Type !stack to view the stack, !trace to toggle tracing and !time to toggle timi
             set_running("<REPL>")
             tokens = lex(buffer)
         except Exception as e:
-            print(f"Lexing error: {e}")
+            error("Lexing error", e)
             continue
 
         depth = 0
-        for t, v in tokens:
+        for tok in tokens:
+            t = tok.type
+            v = tok.value
             if t == "ID" and v in ("fn", "if", "while", "for", "try"):
                 depth += 1
             elif t == "PAREN" and v in ("[", "{"):
@@ -52,7 +54,7 @@ Type !stack to view the stack, !trace to toggle tracing and !time to toggle timi
             try:
                 parse(tokens)
             except Exception as e:
-                print(f"Runtime error: {e}")
+                error("Runtime error", e)
             buffer = ""
             depth = 0
 
@@ -62,11 +64,12 @@ def run(f):
 
     error_quit_true()
     reset_line()
-    set_running("<file>")
 
     if not os.path.exists(f):
         error("File Error", f"File '{f}' not found")
         return
+
+    set_running("<file>")
 
     set_current_dir(os.path.dirname(os.path.abspath(argv[2])))
     with open(argv[2]) as f:
@@ -127,6 +130,7 @@ def libs():
                 print(line.rstrip())
 
 if __name__ == "__main__":
+    set_running("<CLI>")
     if len(argv) < 2:
         set_current_dir(os.path.dirname(os.path.abspath(__file__)))
         repl()

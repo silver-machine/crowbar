@@ -1,9 +1,9 @@
-from src.lex import lex
+import os, random, platform, sys
+
+from src.lex import lex, Token
 from src.stack import *
 from src.error import *
 from src.utils import *
-
-import os, random, platform, sys
 
 constants = {"ARGS": sys.argv[2:]}
 variables = {}
@@ -13,19 +13,32 @@ stack = Stack()
 trace = False
 currentdir = ""
 
+#leo = buns
+#while leo == buns:
+#   print(leo+"buns")
+# jez ^ 1044 AM 9/6/26 in the artroom
+
 stack = Stack()
 
 def parse(tokens):
     global stack, variables, globalvars, functions, constants, currentdir, trace, line_number, time_trace
     i = 0
     while i < len(tokens):
-        ttype, value = tokens[i]
+        ttype = tokens[i].type
+        value = tokens[i].value
+        linenm = tokens[i].line
         set_errtoken(value)
+        set_line(linenm)
 
         if trace and ttype != "NEWLINE":
             print(f"\033[0;35m\033[1m{ttype}\033[0m: \033[0;35m\033[1m{value}\033[0m")
 
-        if ttype == "NUMBER":
+        if ttype == "NEWLINE":
+            increment_line()
+            i += 1
+            continue
+        
+        elif ttype == "NUMBER":
             stack.push(float(value) if "." in value else int(value))
 
         elif ttype == "STRING":
@@ -37,12 +50,13 @@ def parse(tokens):
             i = j
             continue
 
-        if ttype == "PAREN" and value == "{":
+        elif ttype == "PAREN" and value == "{":
             body = []
             depth = 1
             j = i + 1
             while j < len(tokens) and depth > 0:
-                t, v = tokens[j]
+                t = tokens[j].type
+                v = tokens[j].value
                 if t == "PAREN" and v == "{":
                     depth += 1
                     body.append(tokens[j])
@@ -60,7 +74,6 @@ def parse(tokens):
             continue
         
         elif ttype == "ID":
-
             # Run functions
             if value in functions:
                 try: 
@@ -74,83 +87,84 @@ def parse(tokens):
                     variables = prev_vars
                     set_running(prev)
                 except RecursionError: error("Function Error", "Maximum recursion exceeded")
-
-            # Push variable to stack
-            elif value in variables:
-                stack.push(variables[value])
             
-            elif value in globalvars:
-                stack.push(globalvars[value])
+            elif value[0] == "$":
+                # x $y / sets variable y to x
+                if len(stack.stack) < 1:
+                    error("Stack Error", "Stack underflow")
+                    i += 1
+                    continue
 
-            # Push constant to stack
-            elif value in constants:
-                stack.push(constants[value])
+                val = stack.pop()
 
-            elif value == "store":
-                # x store y / stores data x to variable y
-                if i + 1 >= len(tokens):
-                    error("Syntax Error", f"Expected variable name after '{value}' keyword")
+                name_val = value[1:]
 
-                name_type, name_val = tokens[i + 1]
-                
-                if name_type != "ID":
-                    error("Type Error", "Variable name must be identifier")
-                elif name_val in constants:
+                if name_val in constants:
                     error("Definition Error", f"'{name_val}' already defined (as constant)")
                 elif name_val in functions:
                     error("Definition Error", f"'{name_val}' already defined (as function)")
                 elif name_val in globalvars:
                     error("Definition Error", f"'{name_val}' already defined (as global variable)")
                 else:              
-                    val = stack.pop()
                     variables[name_val] = val
-                    i += 1
-            
-            elif value == "global":
-                # x store y / stores data x to variable y
-                if i + 1 >= len(tokens):
-                    error("Syntax Error", f"Expected variable name after '{value}' keyword")
 
-                name_type, name_val = tokens[i + 1]
-                
-                if name_type != "ID":
-                    error("Type Error", "Variable name must be identifier")
-                elif name_val in constants:
+            elif value[0] == "@":
+                # @x / pushes value of x to stack
+                n = value[1:]
+
+                if (n not in variables) and (n not in constants) and (n not in globalvars):
+                    error("Definition Error", f"Variable '{n}' not defined")
+                else:
+                    # Check scopes in order of priority (Local -> Global -> Constant)
+                    if n in variables:
+                        stack.push(variables[n])
+                    elif n in globalvars:
+                        stack.push(globalvars[n])
+                    elif n in constants:
+                        stack.push(constants[n])
+
+            elif value[0] == "%":
+                # x %y / stores data x to const y if not previously defined
+                if len(stack.stack) < 1:
+                    error("Stack Error", "Stack underflow")
+                    i += 1
+                    continue
+
+                val = stack.pop()
+
+                name_val = value[1:]
+
+                if name_val in constants:
                     error("Definition Error", f"'{name_val}' already defined (as constant)")
                 elif name_val in functions:
                     error("Definition Error", f"'{name_val}' already defined (as function)")
-                elif name_val in variables:
-                    error("Definition Error", f"'{name_val}' already defined (as local variable)")
+                elif name_val in globalvars:
+                    error("Definition Error", f"'{name_val}' already defined (as global variable)")
                 else:              
-                    val = stack.pop()
-                    globalvars[name_val] = val
+                    constants[name_val] = val
+            
+            elif value == "~":
+                # x ~y / stores data x to global variable y if not previously defined
+                if len(stack.stack) < 1:
+                    error("Stack Error", "Stack underflow")
                     i += 1
-
-            elif value == "const":
-                # x const y / stores data x to const y if not previously defined
-                if i + 1 >= len(tokens):
-                    error("Syntax Error", f"Expected variable name after '{value}' keyword")
-
-                name_type, name_val = tokens[i + 1]
-                
-                if name_type != "ID":
-                    error("Type Error", "Constant name must be identifier")
+                    continue
 
                 val = stack.pop()
+
+                name_val = value[1:]
+
                 if name_val in constants:
-                    error("Definition Error", f"Constant '{name_val}' already defined")
-                elif name_val in variables:
-                    error("Definition Error", f"'{name_val}' already defined (as variable)")   
+                    error("Definition Error", f"'{name_val}' already defined (as constant)")
                 elif name_val in functions:
                     error("Definition Error", f"'{name_val}' already defined (as function)")
                 elif name_val in globalvars:
-                    error("Definition Error", f"'{name_val}' already defined (as global variable)")     
-                else:
-                    constants[name_val] = val
-                i += 1
+                    error("Definition Error", f"'{name_val}' already defined (as global variable)")
+                else:              
+                    globalvars[name_val] = val
 
-            elif value == "ask":
-                # x (str) / gets input with prompt x, pushes result to stack
+            elif value == "?":
+                # x (str) ? / gets input with prompt x, pushes result to stack
                 if len(stack.stack) < 1:
                     error("Stack Error", "Stack underflow")
                     i += 1
@@ -172,7 +186,7 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                if not type(b) == type(a) == str:
+                if not isinstance(a, str) and not isinstance(b, str):
                     error("Type Error", f"'{value}' keyword expects two strings")
                 else:
                     stack.push(a + b)
@@ -188,7 +202,7 @@ def parse(tokens):
                 b = stack.pop()
                 a = stack.pop()
                 if not (isinstance(a, (int, float)) and isinstance(b, (int, float))):
-                    error("Type Error", f"'{value}' keyword expects two integers or floats")
+                    error("Type Error", f"'{value}' keyword expects two numbers or floats")
                 else:
                     stack.push(a + b)
 
@@ -206,7 +220,6 @@ def parse(tokens):
                     stack.push(a - b)
                 else:
                     error("Type Error", f"{value} expects numbers")
-
 
             elif value == "*":
                 # x (int) y (int) * / multiplies x by y, pushes result to stack
@@ -234,9 +247,9 @@ def parse(tokens):
                 b = stack.pop()
                 a = stack.pop()
                 if not (isinstance(a, (int, float)) and isinstance(b, (int, float))):
-                    error("Type Error", f"{value} expects 2 integers")
-                if not (a == b > 0):
-                    error("Zero Division Error", "Division by zero")
+                    error("Type Error", f"{value} expects 2 numbers")
+                elif b == 0:
+                    error("Division Error", "Division by zero")
                 else:
                     stack.push(a / b)
 
@@ -265,7 +278,7 @@ def parse(tokens):
                 if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(1 if a < b else 0)
                 else:
-                    error("Type Error", f"{value} expects 2 integers")
+                    error("Type Error", f"{value} expects 2 numbers")
 
             elif value == ">":
                 # x y > / checks if x is greater than y, pushes result to stack
@@ -281,7 +294,7 @@ def parse(tokens):
                 if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(1 if a > b else 0)
                 else:
-                    error("Type Error", f"{value} expects 2 integers")
+                    error("Type Error", f"{value} expects 2 numbers")
             
             elif value == "!=":
                 # x y != / checks if x is not equal to y, pushes result to stack
@@ -297,7 +310,7 @@ def parse(tokens):
                 if type(a) == type(b):
                     stack.push(1 if a != b else 0)
                 else:
-                    error("Type Error", f"{value} expects 2 integers")
+                    error("Type Error", f"{value} expects 2 numbers")
 
             elif value == "<=":
                 # x y <= / checks if x is less than or equal to y, pushes result to stack
@@ -312,7 +325,7 @@ def parse(tokens):
                 if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(1 if a <= b else 0)
                 else:
-                    error("Type Error", f"{value} expects 2 integers")
+                    error("Type Error", f"{value} expects 2 numbers")
 
             elif value == ">=":
                 # x y >= / checks if x is greater than or equal to y, pushes result to stack
@@ -327,7 +340,7 @@ def parse(tokens):
                 if (isinstance(a, (int, float)) and isinstance(b, (int, float))):
                     stack.push(1 if a >= b else 0)
                 else:
-                    error("Type Error", f"{value} expects 2 integers")
+                    error("Type Error", f"{value} expects 2 numbers")
 
             elif value == "in":
                 # x y (arr) / checks if x is found in array y, pushes result to stack
@@ -397,7 +410,7 @@ def parse(tokens):
                 if isinstance(s, int):
                     print(chr(s))
                 else:
-                    error("Type Error", f"{value} expects 1 integer")
+                    error("Type Error", f"{value} expects 1 number")
             
             elif value == "ascii":
                 # x (str) ascii / pushes ascii value of x to stack
@@ -475,7 +488,8 @@ def parse(tokens):
                     i += 1
                     continue
 
-                name_type, name_val = tokens[i + 1]
+                name_type = tokens[i + 1].type
+                name_val = tokens[i + 1].value
                 if name_type == "STRING":
                     fname = name_val
                 elif name_type == "ID":
@@ -521,6 +535,7 @@ def parse(tokens):
                 split_line()
                 set_running(fname)
                 prev_vars = variables.copy()
+                set_running(f"<{name_val}>")
                 parse(lex(content))
                 variables = prev_vars
                 return_line()
@@ -536,7 +551,8 @@ def parse(tokens):
                     i += 2
                     continue
 
-                name_type, name_val = tokens[i + 1]
+                name_type = tokens[i + 1].type
+                name_val = tokens[i + 1].value
                 if name_type == "STRING":
                     fname = name_val
                 elif name_type == "ID":
@@ -547,7 +563,7 @@ def parse(tokens):
                     elif name_val in globalvars:
                         fname = globalvars[name_val]
                 else:
-                    error("Syntax Error", "File name must be variable, constant, or stringß")
+                    error("Syntax Error", "File name must be variable, constant, or string")
 
                 try:
                     open(fname, "x").close()
@@ -564,7 +580,8 @@ def parse(tokens):
                     i += 1
                     continue
 
-                name_type, name_val = tokens[i + 1]
+                name_type = tokens[i + 1].type
+                name_val = tokens[i + 1].value
                 if name_type == "STRING":
                     fname = name_val
                 elif name_type == "ID":
@@ -593,6 +610,8 @@ def parse(tokens):
                         f.write(str(stack.pop()))
                 except FileNotFoundError:
                     error("File Error", f"File '{fname}' not found")
+                    i += 1
+                    continue
 
                 i += 1
 
@@ -604,7 +623,8 @@ def parse(tokens):
                     i += 1
                     continue
 
-                name_type, name_val = tokens[i + 1]
+                name_type = tokens[i + 1].type
+                name_val = tokens[i + 1].value
                 if name_type == "STRING":
                     fname = name_val
                 elif name_type == "ID":
@@ -633,6 +653,8 @@ def parse(tokens):
                         f.write(str(stack.pop()))
                 except FileNotFoundError:
                     error("File Error", f"File '{fname}' not found")
+                    i += 1
+                    continue
 
                 i += 1
 
@@ -650,7 +672,8 @@ def parse(tokens):
                     i += 1
                     continue
 
-                name_type, name_val = tokens[i + 1]
+                name_type = tokens[i + 1].type
+                name_val = tokens[i + 1].value
                 if name_type == "STRING":
                     fname = name_val
                 elif name_type == "ID":
@@ -681,7 +704,9 @@ def parse(tokens):
                     except FileNotFoundError:
                         error("File Error", f"File '{fname}' not found")
                 else:
-                    error("Type Error", f"'{value}' expects 1 integer")
+                    error("Type Error", f"'{value}' expects 1 number")
+                    i += 1
+                    continue
 
                 i += 1
 
@@ -693,7 +718,8 @@ def parse(tokens):
                     i += 1
                     continue
 
-                name_type, name_val = tokens[i + 1]
+                name_type = tokens[i + 1].type
+                name_val = tokens[i + 1].value
                 if name_type == "STRING":
                     fname = name_val
                 elif name_type == "ID":
@@ -717,16 +743,18 @@ def parse(tokens):
                         stack.push([line.rstrip("\n") for line in f.readlines()])
                 except FileNotFoundError:
                     error("File Error", f"File '{fname}' not found")
+                    i += 1
+                    continue
 
                 i += 1
-
 
             elif value == "fn":
                 # fn x ... end / define function with name x
 
                 if i + 1 >= len(tokens):
                     error("Syntax Error", "Expected word name after 'fn'")
-                name_type, name_val = tokens[i + 1]
+                name_type = tokens[i + 1].type
+                name_val = tokens[i + 1].value
                 if name_type != "ID":
                     error("Syntax Error", "Word name must be identifier")
                 
@@ -746,7 +774,9 @@ def parse(tokens):
 
                 depth = 0
                 mode = "condition"
-                for t, v in tokens_block:
+                for tok in tokens_block:
+                    t = tok.type
+                    v = tok.value
                     if t == "ID" and v in ("if", "while", "for", "fn"):
                         depth += 1
                     elif t == "ID" and v == "end":
@@ -759,11 +789,11 @@ def parse(tokens):
                         continue
 
                     if mode == "condition":
-                        condition_tokens.append((t, v))
+                        condition_tokens.append(Token(t, v, linenm))
                     elif mode == "true":
-                        true_tokens.append((t, v))
+                        true_tokens.append(Token(t, v, linenm))
                     else:
-                        false_tokens.append((t, v))
+                        false_tokens.append(Token(t, v, linenm))
 
                 if not condition_tokens:
                     error("Syntax Error", "'if' missing condition")
@@ -781,7 +811,6 @@ def parse(tokens):
                 i = j
                 continue
 
-
             elif value == "for":
                 # x (int) for y (id) ... end
 
@@ -790,7 +819,8 @@ def parse(tokens):
                     i += 1
                     continue
 
-                name_type, name_val = tokens[i + 1]
+                name_type = tokens[i + 1].type
+                name_val = tokens[i + 1].value
                 if name_type != "ID":
                     error("Syntax Error", "Icrement variable name must be an identifier")
                     i += 2
@@ -803,7 +833,7 @@ def parse(tokens):
 
                 count = stack.pop()
                 if not isinstance(count, int):
-                    error("Type Error", f"{value} expects an integer count")
+                    error("Type Error", f"{value} expects an number count")
                     i += 2
                     continue
 
@@ -824,7 +854,7 @@ def parse(tokens):
                 continue
 
             elif value == "while":
-                # while x do .. end
+                # while .. do .. end
                 tokens_block, j = extract_block(tokens, i + 1, open_tokens=("while","fn","if","for"), close_token="end")
 
                 condition_tokens = []
@@ -832,7 +862,9 @@ def parse(tokens):
 
                 depth = 0
                 mode = "condition"
-                for t, v in tokens_block:
+                for tok in tokens_block:
+                    t = tok.type
+                    v = tok.value
                     if t == "ID" and v in ("if", "while", "for", "fn"):
                         depth += 1
                     elif t == "ID" and v == "end":
@@ -842,9 +874,9 @@ def parse(tokens):
                         continue
 
                     if mode == "condition":
-                        condition_tokens.append((t, v))
+                        condition_tokens.append(Token(t, v, linenm))
                     else:
-                        body_tokens.append((t, v))
+                        body_tokens.append(Token(t, v, linenm))
 
                 if not condition_tokens:
                     error("Syntax Error", "'while' missing condition")
@@ -903,8 +935,8 @@ def parse(tokens):
                 else:
                     stack.push(len(stack.pop()))
 
-            elif value == "rand":
-                # x (int) rand
+            elif value == "roll":
+                # x (int) roll / pushes a number between 1 and x
                 if len(stack.stack) < 1:
                     error("Stack Error", "Stack underflow")
                     i += 1
@@ -913,11 +945,16 @@ def parse(tokens):
                     s = stack.pop()
 
                     if isinstance(s, int):
-                        stack.push(random.randrange(0, s))
+                        stack.push(random.randrange(1, s))
                     else:
-                        error("Type Error", f"{value} expects 1 integer")
+                        error("Type Error", f"{value} expects 1 number")
+
+            elif value == "rand":
+                # rand / pushes a random number
+                stack.push(random.random())
 
             elif value == "pass":
+                # do nothing
                 pass
 
             elif value == "eval":
@@ -951,7 +988,7 @@ def parse(tokens):
                         arr[idx] = val
                         stack.push(arr)
                     else:
-                        error("Type Error", f"{value} expects 1 array, 1 integer, and 1 anything")
+                        error("Type Error", f"{value} expects 1 array, 1 number, and 1 anything")
             
             elif value == "get":
                 # x (arr/str) y (int) get / pushes x[y]
@@ -966,7 +1003,7 @@ def parse(tokens):
                     if isinstance(arr, (list, str)) and isinstance(idx, int):
                         stack.push(arr[idx])
                     else:
-                        error("Type Error", f"{value} expects 1 array/string and 1 integer")
+                        error("Type Error", f"{value} expects 1 array/string and 1 number")
 
             elif value == "add":
                 # x (arr/str) y (str if str, any if arr) add / appends y to x
@@ -997,11 +1034,17 @@ def parse(tokens):
                     idx = stack.pop()
                     arr = stack.pop()
 
-                    if isinstance(arr, (list, str)):
+                    if len(arr) == 0:
+                        error("Index Error", "Can't cut from list/string with no items")
+
+                    if isinstance(arr, list):
                         arr.remove(idx)
                         stack.push(arr)
+                    if isinstance(arr, str):
+                        arr = arr[:idx] + arr[idx+1:]
+                        stack.push(arr)
                     else:
-                        error("Type Error", f"{value} expects 1 array/string and 1 integer")
+                        error("Type Error", f"{value} expects 1 array/string and 1 number")
             
             elif value == "pops":
                 # x (arr/str) y (idx) pops / pop y from x, pushes result to stack
@@ -1020,11 +1063,11 @@ def parse(tokens):
                         stack.push(arr[idx:idx+1])
                         stack.push(arr[:idx] + arr[idx+1:])
                     else:
-                        error("Type Error", f"{value} expects 1 array/string and 1 integer")
+                        error("Type Error", f"{value} expects 1 array/string and 1 number")
 
             elif value == "pop":
                 # x (arr/str) pop / pops from x, pushes x and popped to stack
-                if len(stack.stack) < 2:
+                if len(stack.stack) < 1:
                     error("Stack Error", "Stack underflow")
                     i += 1
                     continue
@@ -1035,8 +1078,8 @@ def parse(tokens):
                         stack.push(arr.pop())
                         stack.push(arr)
                     elif isinstance(arr, str):
-                        stack.push(arr[-1])
                         stack.push(arr[0:-1])
+                        stack.push(arr[-1])
                     else:
                         error("Type Error", f"{value} expects 1 array/string")
             
@@ -1094,7 +1137,7 @@ def parse(tokens):
                     if isinstance(x, (int, float)):
                         sleep(x)
                     else:
-                        error("Type Error", f"{value} expects 1 string")
+                        error("Type Error", f"{value} expects 1 number")
             
             elif value == "split":
                 # x (str) y (str) split / splits x by y, pushes result to stack
@@ -1106,8 +1149,8 @@ def parse(tokens):
                     y = stack.pop()
                     x = stack.pop()
 
-                    if type(x) == type(y) == str:
-                        stack.push(y.split(x))
+                    if not isinstance(x, str) and not isinstance(y, str):
+                        stack.push(x.split(y))
                     else:
                         error("Type Error", f"{value} expects 2 strings")
             
@@ -1125,7 +1168,7 @@ def parse(tokens):
                     if isinstance(start, int) and isinstance(distance, int) and isinstance(string, str):
                         stack.push(string[start:start+distance])
                     else:
-                        error("Type Error", f"{value} expects 2 integers and 1 string")
+                        error("Type Error", f"{value} expects 2 numbers and 1 string")
             
             elif value == "reset":
                 functions = {}
@@ -1134,12 +1177,15 @@ def parse(tokens):
                 globalvars = {}
             
             elif value == "release":
-                # release x (id) / removes x from constants variables or functions
+                # release x / removes x from constants variables or functions
                 if i + 1 >= len(tokens):
                     error("Syntax Error", f"Expected variable/constant/function name after {value}")
 
-                name_type, name_val = tokens[i + 1]
-                if name_type != "ID":
+                name_type = tokens[i + 1].type
+                name_val = tokens[i + 1].value
+                if name_type == "ID":
+                    pass
+                else:
                     error("Type Error", "Variable/constant/function name must be identifier")
                 
                 if name_val in variables:
@@ -1161,7 +1207,8 @@ def parse(tokens):
                     i += 2
                     continue
                 else:
-                    name_type, name_val = tokens[i + 1]
+                    name_type = tokens[i + 1].type
+                    name_val = tokens[i + 1].value
                     if name_type != "ID":
                         error("Type Error", "Variable/constant/function name must be identifier")
                     
@@ -1195,7 +1242,7 @@ def parse(tokens):
 
                 b = stack.pop()
                 a = stack.pop()
-                if not type(b) == type(a) == str:
+                if not isinstance(a, str) and not isinstance(b, str):
                     error("Type Error", f"'{value}' keyword expects two strings")
                 else:
                     error(a, b)

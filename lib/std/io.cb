@@ -1,60 +1,66 @@
-;; I/O
+;; I/O Formatting Library
 
 fn std_fset
-    ;; takes in [x y z ...]
+    ;; takes in array [x y z ...] on stack
     if defined STDFORMAT do
         release STDFORMAT
-        const STDFORMAT
-    else
-        const STDFORMAT
     end
+    $STDFORMAT
 end
 
 fn std_fprintln
-    ;; takes in "text"
-    if defined STDFORMAT not do
-        ["NO FORMAT DEFINED. "] const STDFORMAT
+    ;; takes in "text" on stack
+    if defined STDFORMAT do
+        pass
+    else
+        ["NO FORMAT DEFINED. "] $STDFORMAT
     end
-    store STDTEXT
-    "" store STDFS
-    STDFORMAT len for i
-        STDFS
-        STDFORMAT i get
-        && store STDFS
+    $STDTEXT
+    "" $STDFS
+    
+    @STDFORMAT len for i
+        @STDFS @STDFORMAT @i get && $STDFS
     end
-    STDFS STDTEXT RESET && && .
+    
+    @STDFS @STDTEXT && .
     release STDFS
     release STDTEXT
 end
 
 fn std_fprint
-    ;; takes in "text"
-    if defined STDFORMAT not do
-        ["NO FORMAT DEFINED! "] const STDFORMAT const STDFORMAT
+    ;; takes in "text" on stack
+    if defined STDFORMAT do
+        pass
+    else
+        ["NO FORMAT DEFINED! "] $STDFORMAT
     end
-    store STDTEXT
-    "" store STDFS
-    STDFORMAT len for i
-        STDFS
-        STDFORMAT i get
-        && store STDFS
+    $STDTEXT
+    "" $STDFS
+    
+    @STDFORMAT len for i
+        @STDFS @STDFORMAT @i get && $STDFS
     end
-    STDFS STDTEXT RESET && && ,
+    
+    @STDFS @STDTEXT && ,
     release STDFS
     release STDTEXT
 end
 
 fn std_fask
-    ;; takes in "prompt"
-    if defined STDFORMAT not do
-        ["NO FORMAT DEFINED! "] const STDFORMAT
+    ;; takes in "prompt" on stack
+    if defined STDFORMAT do
+        pass
+    else
+        ["NO FORMAT DEFINED! "] $STDFORMAT
     end
-    store STDTEXT
-    "" store STDFS
-    STDFORMAT len for i
-        STDFS STDFORMAT i get &&
+    $STDTEXT
+    "" $STDFS
+    
+    @STDFORMAT len for i
+        @STDFS @STDFORMAT @i get && $STDFS
     end
-    STDFS STDTEXT RESET && && ask
+    
+    @STDFS @STDTEXT && ask
     release STDFS
     release STDTEXT
 end

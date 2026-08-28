@@ -4,6 +4,7 @@ error_quit = False
 line_number = 1
 old_line = 1
 running = ""
+errtoken = ""
 
 def error_quit_true():
     global error_quit
@@ -22,6 +23,10 @@ def split_line():
     old_line = line_number
     reset_line()
 
+def set_line(l):
+     global line_number
+     line_number = l
+
 def return_line():
     global line_number, old_line
     line_number = old_line
@@ -39,14 +44,20 @@ def set_running(set_to):
     running = set_to
 
 def error(error_type, error_text):
-    global line_number
-    text = f"\033[0;31m\033[1m{error_type}: \033[0m{error_text} (on line {str(line_number)}"
+    global line_number, errtoken
+    text = f"\033[0;31m\033[1m{error_type}: \033[0m{error_text}"
 
-    if errtoken:
-        text += f" / from token '\033[0;31m\033[1m{errtoken}\033[0m'"
-
-    if len(running) > 0:
-        text += f" / whilst in \033[0;35m{running}\033[0m"
+    text += " ("
+    if running != "<CLI>":
+        text += f"on line {str(line_number)}"
+        if errtoken:
+            text += f" / from token '\033[0;31m\033[1m{errtoken}\033[0m'"
+            if running:
+                text += f" / whilst in \033[0;35m{running}\033[0m"
+    elif errtoken:
+                text += f"from token '\033[0;31m\033[1m{errtoken}\033[0m'"
+                if running:
+                    text += f" / whilst in \033[0;35m{running}\033[0m"
 
     text += ")"
 

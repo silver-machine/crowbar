@@ -27,7 +27,8 @@ def extract_block(tokens, start_index, open_tokens=("fn","for","while","if"), cl
     depth = 1
     i = start_index
     while i < len(tokens) and depth > 0:
-        t, v = tokens[i]
+        t = tokens[i].type
+        v = tokens[i].value
         if t == "ID" and v in open_tokens:
             depth += 1
             body.append(tokens[i])
@@ -47,7 +48,9 @@ def parse_array(tokens, start_index, open, close):
     arr = []
     i = start_index
     while i < len(tokens):
-        t, v = tokens[i]
+        t = tokens[i].type
+        v = tokens[i].value
+        
         if t == "PAREN" and v == close:
             return arr, i
         elif t == "PAREN" and v == open:
@@ -58,7 +61,7 @@ def parse_array(tokens, start_index, open, close):
             if t == "NUMBER":
                 arr.append(float(v) if "." in v else int(v))
             elif t == "STRING":
-                 arr.append(v)
+                arr.append(v)
             elif t == "ID":
                 if v in variables:
                     arr.append(variables[v])
@@ -67,7 +70,9 @@ def parse_array(tokens, start_index, open, close):
                 else:
                     arr.append(v)
         i += 1
+        
     error("Syntax Error", "Unterminated array literal")
+    return [], i
 
 def format_data(data):
     t = ""

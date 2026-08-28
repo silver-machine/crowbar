@@ -1,11 +1,19 @@
 ;; LOGIC
 
 fn and
-    ;; takes in code code
+    ;; takes in a b on stack -> pushes 1 or 0
     if depth 2 >= do
-        store STDA
-        store STDB
-        STDA STDB =
+        $STDA
+        $STDB
+        if @STDA 0 != do
+            if @STDB 0 != do
+                1
+            else
+                0
+            end
+        else
+            0
+        end
         release STDA
         release STDB
     else
@@ -14,10 +22,14 @@ fn and
 end
 
 fn not
-    ;; takes in code
+    ;; takes in a on stack -> pushes 1 if 0, else 0
     if depth 1 >= do
-        store STDA
-        STDA 1 !=
+        $STDA
+        if @STDA 0 = do
+            1
+        else
+            0
+        end
         release STDA
     else
         "Stack Error" "Stack Underflow" error
@@ -25,22 +37,29 @@ fn not
 end
 
 fn or
-    ;; takes in code code
+    ;; takes in a b on stack -> pushes 1 or 0
     if depth 2 >= do
-        store STDA
-        store STDB
-        if STDA do
+        $STDA
+        $STDB
+        if @STDA 0 != do
             1
+        else
+            if @STDB 0 != do
+                1
+            else
+                0
+            end
         end
-        if STDB do
-            1
-        end
-        if STDA 0 = STDB 0 = and do
-            0
-        end 
         release STDA
         release STDB
     else
         "Stack Error" "Stack Underflow" error
     end
 end
+
+fn <=>
+    $x $y
+    @y @x >
+    @y @x < 
+    -
+end  
